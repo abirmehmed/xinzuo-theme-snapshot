@@ -1,133 +1,151 @@
-# xinzuo.com.au Shopify clone — TYICDI hiring task
+# Xinzuo Shopify clone — TYICDI hiring task
 
-A sanitized clone of the [xinzuo.com.au](https://xinzuo.com.au) Shopify store, packaged so you can stand up a full visual mirror on your own free Shopify dev store in **under 5 minutes** of script time.
+You're getting a near-real clone of [xinzuo.com.au](https://xinzuo.com.au) running on your **own** free Shopify dev store. Your 2-hour timed window starts when you submit on the [hiring portal](https://apply.toldyouicoulddoit.com). Setup below does **not** count against the timer — do it ahead of time.
 
-You get the real Liquid theme + 49 sample products (the ones the theme actually references plus backfill) + 68 collections + 17 pages + 5 articles + 162 optimised media files (logo, hero, icons, testimonials, payment badges) — imported via one command.
+**Measured setup time: under 5 minutes of script time** (plus ~5 min for first-time Shopify Partners signup if you've never used it).
 
 ---
 
-## Quick start — ~5 min of script time once your dev store + token are ready
+## Setup — copy and paste, top to bottom
 
-### 1. Sign up for Shopify Partners (free, instant)
+### A. One-time Shopify side (~5 min if you've never done this)
 
-<https://www.shopify.com/partners/signup>
+1. **Create a Shopify Partner account** → <https://www.shopify.com/partners/signup> (free, no card, instant)
+2. **Make a development store**: Partner dashboard → **Stores** → **Add store** → **Create development store** → pick **"Create a store to test and build"** → any name will do.
+3. **Generate an Admin API token** inside that new dev store:
+   1. Open the dev store admin (**View store** button on the Partner dashboard, then **Online Store**)
+   2. **Settings → Apps and sales channels → Develop apps** → **Allow custom app development** (confirm)
+   3. **Create an app** → name it `seed` (anything works)
+   4. **Configure Admin API scopes** → tick exactly these (and nothing else):
+      - `read_products`, `write_products`
+      - `read_themes`, `write_themes`
+      - `read_content`, `write_content`
+   5. **Save** → **Install app** → **Reveal token once** → copy the value starting `shpat_…` (you will only see it once — paste it somewhere safe immediately).
+4. Note your store URL — it ends in `.myshopify.com` (visible in the admin URL bar).
 
-### 2. Create a development store
+### B. Every-time setup (~5 min of script time)
 
-Partner dashboard → **Stores** → **Add store** → **Development store**. Pick any name. Won't be visible to customers, never billed.
-
-### 3. Generate an Admin API token in your dev store
-
-In your dev store admin:
-
-1. **Settings → Apps and sales channels → Develop apps**
-2. **Allow custom app development** (if prompted)
-3. **Create an app** → name it anything (e.g. `xinzuo-seed`)
-4. **Configure Admin API scopes** → tick **all of**:
-   - `read_products`, `write_products`
-   - `read_themes`, `write_themes`
-   - `read_content`, `write_content`
-5. **Save → Install app**
-6. Copy the **Admin API access token** (starts with `shpat_…`) — you only see it once.
-
-### 4. Clone this repo
+> Prerequisites: Node 18+ and git already installed.
 
 ```bash
+# 1. Clone (4s)
 git clone https://github.com/dintyo/xinzuo-theme-snapshot.git
 cd xinzuo-theme-snapshot
-```
 
-### 5. Create `.env` in the repo root
+# 2. Copy the env template and paste your values from step A
+cp .env.example .env
+# then edit .env — replace the two placeholder values with your store URL + token
 
-```bash
-SHOPIFY_STORE_URL=your-dev-store.myshopify.com
-SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-> The `.env` is gitignored — never commit your token.
-
-### 6. Run setup (one command, ~4 min)
-
-```bash
+# 3. Run it (~4.5 min)
 node scripts/setup.mjs --write
 ```
 
-Measured timing on a fresh clean dev store (Win11, 1Gbps, no rate-limit retries):
-- `git clone`: **4s**
-- Upload 162 theme media files (logo, hero, icons, testimonials, payment badges — already optimised to webp@1200px): **~80s**
-- Seed data (49 products, 68 collections, 17 pages, 5 articles): **~65s**
-- Theme push (584 files): **~130s**
-- **Total from `git clone` to live dev store: ~4.6 min**
+### C. View your store
 
-(Allow extra time on the very first run for Shopify Partners signup, creating a dev store, and generating the API token — those steps are one-time and take another ~5 min for someone unfamiliar with the Partner dashboard.)
-
-### 7. Visit your dev store
-
-Partner dashboard → click your store → **Online Store**. You're now looking at a working clone of xinzuo.com.au running on your own infrastructure.
+When the script finishes it prints `Visit your store: https://your-store.myshopify.com`. Open that — you'll hit a password page (Shopify default for unopened dev stores). The password is shown in your admin under **Online Store → Preferences → "Restrict access" / Password page**, or just disable the toggle to skip it entirely.
 
 ---
 
-## The hiring task
+## The task — pick the ONE highest-impact thing you'd fix
 
-**Pick the ONE thing** on this store that you'd fix if you owned it. Anywhere — homepage, PDP, collection page, cart, mobile UX, navigation, blog, footer. Performance, SEO, conversion, accessibility, bug, copy, trust — your call.
+The clone is intentionally imperfect — it mirrors a real production-shaped store with real production-shaped issues. **Find the thing you'd ship if you owned this codebase**, then ship it.
 
-**This is an engineering task, not a redesign.** We want the eye for what a real Shopify dev would catch.
+> The point isn't to fix everything. It's to demonstrate your eye for **what matters** and your ability to **execute cleanly under time pressure**.
 
-Submit in your own public GitHub repo with **≥3 commits inside your 2-hour window**:
+### Some places worth looking (not a checklist — pick what you think is highest impact)
 
-1. Your fix (edited Liquid/CSS/JS in original paths)
+- **Bundle Builder** is currently a dead page (`/pages/bundle-builder`). The live one at <https://xinzuo.com.au/pages/bundle-builder> shows what it should look like — tabbed series selector, sticky cart, tiered discounts. Could you rebuild it? Or improve on it?
+- **Performance**: Lighthouse the homepage and a PDP. Big easy wins around image preloading, render-blocking JS, the Swiper carousels, font loading.
+- **Cart drawer**: open it, add a product, remove one, change qty. Is the UX clean? Mobile? Edge cases (empty state, qty=0)?
+- **Navbar / header**: mobile menu behaviour, focus traps, dropdown delays, sticky behaviour on scroll.
+- **PDP** (`/products/zhen-xz05-series-8-inch-chef-knife` is a good one): variant selector logic, gallery thumbnails, schema markup, "Add to cart" feedback.
+- **Collection page** (`/collections/all`): filter UX, sort options, mobile layout, empty states, perceived speed.
+- **Accessibility**: keyboard nav, screen-reader labels, contrast on the dark theme, focus rings.
+- **SEO / structured data**: missing schemas, broken canonicals, meta titles, OG images.
+- **Conversion**: trust signals, social proof placement, urgency, abandoned-cart hooks.
+- **Anywhere else you spot a real issue** — copy, alignment, broken images, dead links, a typo in the FAQ, anything.
+
+### What to submit
+
+A **public** GitHub repo with **at least 3 commits inside your 2-hour window**, containing:
+
+1. Your fix — edited Liquid/CSS/JS in the original paths (so we can diff cleanly against this repo)
 2. `before.png` — screenshot of the issue
 3. `after.png` — screenshot of your fix
-4. `NOTE.md`:
+4. `NOTE.md` — markdown with these headings:
    ```markdown
    ## What I picked
-   ## Why it's #1
+   ## Why it's the highest-impact thing here
    ## What I did
    ## What I'd do next
    ```
-5. Loom URL (max 3 min, face + screen) in your repo's `README.md`
+5. Loom URL (max 3 min, face + screen, walking through the change) in your repo's `README.md`
 
-Submit your repo + Loom + NOTE on the [hiring portal](https://apply.toldyouicoulddoit.com).
+Submit your repo + Loom + `NOTE.md` summary on the [hiring portal](https://apply.toldyouicoulddoit.com).
 
 ---
 
-## Setup script options
+## Script options
 
 ```bash
-# Default — slim seed (49 theme-referenced products + all media), takes ~4.5 min
+# Default — slim seed (49 theme-referenced products + all media), ~4.5 min
 node scripts/setup.mjs --write
 
-# Full catalog — 237 products + 77 articles, takes ~10 min
+# Full catalogue — 237 products + 77 articles, ~10 min
 node scripts/setup.mjs --write --full
 
-# Wipe everything (products + collections + pages + files + non-main themes) and re-seed
+# Wipe everything (products + collections + pages + files + non-main themes) and re-seed clean
 node scripts/setup.mjs --write --wipe
 
-# Dry-run preview (no changes, prints what would happen)
+# Dry-run — prints what would happen, no API writes
 node scripts/setup.mjs
 ```
 
-Individual steps if you want fine control:
+Fine-grained:
 ```bash
-node scripts/seed-to-dev-store.mjs --write    # data only
+node scripts/seed-to-dev-store.mjs --write    # products + collections + pages + media only
 node scripts/push-theme.mjs --write           # theme only
 ```
 
 ---
 
+## Measured timing (fresh clean dev store, Win11, 1Gbps)
+
+| Step | Time |
+|---|---|
+| `git clone` | 4s |
+| Upload 162 media files (logo, hero, icons, testimonials, payment badges) | 80s |
+| Seed 49 products + 68 collections + 17 pages + 5 articles | 65s |
+| Push + publish theme (584 files) | 130s |
+| **Total** | **~4.5 min** |
+
+---
+
+## Troubleshooting
+
+- **"REFUSED: store URL must end in *.myshopify.com"** — you put your custom domain in `.env`. Use the `*.myshopify.com` URL instead.
+- **401 on first request** — your token is wrong or you didn't tick all six scopes. Re-check step A.3.
+- **Some images don't render on the homepage** — wait a minute and reload; Shopify processes uploaded files asynchronously after the script completes.
+- **Bundle Builder page is empty** — that's intentional. It's one of the things you could fix.
+
+---
+
 ## What's NOT in this repo (and why)
 
-- `.env` / API tokens — never committed
+- `.env` / API tokens — gitignored, never committed
 - Customer data — never queried
-- Order data — never queried
+- Order, transaction, payment data — never queried
 - Refunds, discount codes, webhooks, apps — never queried
-- Variant `cost`, `inventory_quantity`, internal metafields — explicitly stripped by the export allowlist
-- Internal tags (anything containing "supplier", "wholesale", "margin") — filtered
-- Apps (Judge.me, Klaviyo, etc.) — their theme app blocks are stripped at push time since you don't have those apps installed
-- Videos (5 product preview clips) — too big to ship and they're not core to the task
-- The `media/` folder contains 157 images (logo, hero photos, icons, testimonial avatars, payment badges) downsized to 1200px and converted to webp@q80 — same visual content as xinzuo.com.au, just optimised. Original `.png`/`.jpg` refs in the theme JSON are rewritten to `.webp` at push time
+- Variant `cost`, `inventory_quantity`, internal metafields — explicitly stripped at export
+- Internal tags (`supplier:`, `wholesale:`, `margin:`, `cost:`) — filtered out
+- Theme app blocks (Judge.me, Klaviyo, etc.) — pruned at push time since you don't have those apps installed
+- Videos (5 product preview clips) — too big to ship and not core to the task
+
+The `media/` folder contains 162 images downsized to 1200px and converted to webp@q80 — visually identical to xinzuo.com.au, just optimised. Original `.png`/`.jpg` refs in the theme JSON are rewritten to `.webp` at push time.
 
 In short: only what you'd see by browsing xinzuo.com.au with DevTools open.
+
+---
 
 ## License
 
